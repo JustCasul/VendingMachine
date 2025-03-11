@@ -62,7 +62,7 @@ public class VendingMachine implements VendingMachineFunctionality
 
    @Override
    public boolean isBeverageListed(String name) {
-      return (beverages.stream().anyMatch(beverage -> beverage.getName().equals(name)));
+      return beverages.stream().anyMatch(beverage -> beverage.getName().equals(name));
    }
 
    @Override
@@ -77,7 +77,7 @@ public class VendingMachine implements VendingMachineFunctionality
 
    @Override
    public double calculatePriceForBottlesOf(String name, int numberOfBottles) {
-      return 0;
+      return calculatePriceForOneBottleOf(name) * numberOfBottles;
    }
 
    @Override
