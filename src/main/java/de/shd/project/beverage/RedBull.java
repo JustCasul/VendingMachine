@@ -2,8 +2,8 @@ package de.shd.project.beverage;
 
 public class RedBull extends Beverage implements Caffeinated {
 
-    public RedBull(String name, double pricePerLiter, double amount) {
-        super(name, pricePerLiter, amount);
+    public RedBull(String name, double pricePerLiter, double amount, int temperature) {
+        super(name, pricePerLiter, amount, temperature);
     }
 
     public RedBull(Beverage base, double amount) {

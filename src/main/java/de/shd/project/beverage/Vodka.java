@@ -3,8 +3,8 @@ package de.shd.project.beverage;
 public class Vodka extends Beverage implements Alcoholic {
 
 
-    public Vodka(String name, double pricePerLiter, double amount) {
-        super(name, pricePerLiter, amount);
+    public Vodka(String name, double pricePerLiter, double amount, int temperature) {
+        super(name, pricePerLiter, amount, temperature);
     }
 
     protected Vodka(Beverage base, double amount) {
@@ -13,7 +13,7 @@ public class Vodka extends Beverage implements Alcoholic {
 
     @Override
     public double getAlcoholStrength() {
-        return 0;
+        return 40;
     }
 
     @Override

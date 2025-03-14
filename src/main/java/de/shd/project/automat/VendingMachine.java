@@ -69,18 +69,18 @@ public class VendingMachine implements VendingMachineFunctionality
 
    @Override
    public double calculatePriceForOneBottleOf(String name) {
-      return findBeverage(name).map(e -> Bottle.PRICE_FOR_BOTTLE + (e.getPricePerLiter() * Math.min(e.getAmount(), Bottle.MAX_AMOUNT_IN_LITER))).orElseThrow(VendingMachineException::new);
+      return findBeverage(name).map(beverage -> Bottle.PRICE_FOR_BOTTLE + Bottle.MAX_AMOUNT_IN_LITER * beverage.getPricePerLiter()).orElseThrow(VendingMachineException::new);
    }
 
    @Override
    public VendingMachinePurchase buyBeverage(String name, double money) {
 
       return findBeverage(name)
-         .map(beverage -> {
-         Bottle<Beverage> bottle = new Bottle<>(beverage);
-         return new VendingMachinePurchase(bottle, money - bottle.getPrice());
-      })
-              .orElseThrow(VendingMachineException::new);
+         .map(beverage ->
+         {
+            Bottle<Beverage> bottle = new Bottle<>(beverage);
+            return new VendingMachinePurchase(bottle, money - bottle.getPrice());
+         }).orElseThrow(VendingMachineException::new);
    }
 
    @Override
@@ -135,12 +135,12 @@ public class VendingMachine implements VendingMachineFunctionality
 
    @Override
    public List<Beverage> getOnlyColdBeverages() {
-      return beverages.stream().filter(beverage -> beverage.getTemperature() >= 4).toList();
+      return beverages.stream().filter(beverage -> beverage.getTemperature() <= 4).toList();
    }
 
    @Override
    public List<Beverage> getOnlyHotBeverages() {
-      return beverages.stream().filter(beverage -> beverage.getTemperature() <= 8).toList();
+      return beverages.stream().filter(beverage -> beverage.getTemperature() >= 8).toList();
    }
 
    @Override
@@ -180,6 +180,6 @@ public class VendingMachine implements VendingMachineFunctionality
 
    @Override
    public List<Beverage> findAllAffordableBeverages(double budget) {
-      return beverages.stream().filter(beverage -> (Bottle.PRICE_FOR_BOTTLE + Bottle.MAX_AMOUNT_IN_LITER * beverage.getPricePerLiter()) < budget).toList();
+      return beverages.stream().filter(beverage -> (Bottle.PRICE_FOR_BOTTLE + Bottle.MAX_AMOUNT_IN_LITER * beverage.getPricePerLiter()) <= budget).toList();
    }
 }

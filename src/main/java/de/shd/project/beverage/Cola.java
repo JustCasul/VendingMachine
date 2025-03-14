@@ -4,8 +4,8 @@ import de.shd.project.supplier.BeverageSupplier;
 
 public class Cola extends Beverage {
 
-    public Cola(String name, double pricePerLiter, double amount) {
-        super(name, pricePerLiter, amount);
+    public Cola(String name, double pricePerLiter, double amount, int temperature) {
+        super(name, pricePerLiter, amount, temperature);
     }
 
     public Cola(Beverage base, double amount) {

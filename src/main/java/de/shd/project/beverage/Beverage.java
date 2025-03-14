@@ -29,12 +29,12 @@ public abstract class Beverage
     */
    private int temperature;
 
-   public Beverage(String name, double pricePerLiter, double amount)
+   public Beverage(String name, double pricePerLiter, double amount, int temperature)
    {
       this.name = name;
       this.pricePerLiter = pricePerLiter;
       this.amount = amount;
-      this.temperature = 7;
+      this.temperature = temperature;
    }
 
    protected Beverage(Beverage base, double amount)
@@ -102,6 +102,10 @@ public abstract class Beverage
    public void setAmount(double amount)
    {
       this.amount = amount;
+   }
+
+   public void setTemperature(int temperature) {
+      this.temperature = temperature;
    }
 
    public int getTemperature()
