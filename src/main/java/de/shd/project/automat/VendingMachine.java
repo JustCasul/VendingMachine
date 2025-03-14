@@ -4,7 +4,9 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import de.shd.project.beverage.Alcoholic;
 import de.shd.project.beverage.Beverage;
+import de.shd.project.beverage.Caffeinated;
 import de.shd.project.supplier.BeverageSupplier;
 import de.shd.project.container.Bottle;
 
@@ -72,7 +74,13 @@ public class VendingMachine implements VendingMachineFunctionality
 
    @Override
    public VendingMachinePurchase buyBeverage(String name, double money) {
-      return null;
+
+      return findBeverage(name)
+         .map(beverage -> {
+         Bottle<Beverage> bottle = new Bottle<>(beverage);
+         return new VendingMachinePurchase(bottle, money - bottle.getPrice());
+      })
+              .orElseThrow(VendingMachineException::new);
    }
 
    @Override
@@ -82,96 +90,96 @@ public class VendingMachine implements VendingMachineFunctionality
 
    @Override
    public double calculateTotalValueOfAllBeverages() {
-      return 0;
+      return getBeverages().stream().map(beverage -> beverage.getPricePerLiter() * beverage.getAmount()).mapToDouble(Double::doubleValue).sum();
    }
 
    @Override
    public Set<Beverage> getAllAlcoholicBeverages() {
-      return Set.of();
+      return getBeverages().stream().filter(Alcoholic.class::isInstance).collect(Collectors.toSet());
    }
 
    @Override
    public Set<Beverage> getAllCaffeinatedBeverages() {
-      return Set.of();
+      return getBeverages().stream().filter(Caffeinated.class::isInstance).collect(Collectors.toSet());
    }
 
    @Override
    public double calculateTotalValueOfAllAlcoholicBeverages() {
-      return 0;
+      return getAllAlcoholicBeverages().stream().mapToDouble(beverage -> beverage.getPricePerLiter() * beverage.getAmount()).sum();
    }
 
    @Override
    public Set<String> displayNamesOfAllAlcoholicBeverages() {
-      return Set.of();
+      return Set.of(getAllAlcoholicBeverages().stream().map(Beverage::getName).collect(Collectors.joining(", ")));
    }
 
    @Override
    public List<String> displayNamesOfAllNonAlcoholicBeverages() {
-      return List.of();
+      return List.of(getBeverages().stream().filter(alkohol -> !(alkohol instanceof Alcoholic)).map(Beverage::getName).collect(Collectors.joining(", ")));
    }
 
    @Override
    public Map<Class<? extends Beverage>, List<Beverage>> getBeveragesGroupedByClass() {
-      return Map.of();
+      return beverages.stream().collect(Collectors.groupingBy(Beverage::getClass));
    }
 
    @Override
    public String displayAllBeverageNamesSeparatedByComma() {
-      return "";
+      return getBeverages().stream().map(Beverage::getName).collect(Collectors.joining(", "));
    }
 
    @Override
    public List<Beverage> getAllBeveragesWithAmountBelowThreshold(int threshold) {
-      return List.of();
+      return beverages.stream().filter(beverage -> beverage.getAmount() < threshold).toList();
    }
 
    @Override
    public List<Beverage> getOnlyColdBeverages() {
-      return List.of();
+      return beverages.stream().filter(beverage -> beverage.getTemperature() >= 4).toList();
    }
 
    @Override
    public List<Beverage> getOnlyHotBeverages() {
-      return List.of();
+      return beverages.stream().filter(beverage -> beverage.getTemperature() <= 8).toList();
    }
 
    @Override
    public double calculateAverageTemperatureOfAllBeverages() {
-      return 0;
+      return beverages.stream().mapToDouble(Beverage::getTemperature).average().orElseThrow(VendingMachineException::new);
    }
 
    @Override
    public double calculateAverageAlcoholicStrengthOfAllAlcoholicBeverages() {
-      return 0;
+      return beverages.stream().filter(Alcoholic.class::isInstance).map(Alcoholic.class::cast).mapToDouble(Alcoholic::getAlcoholStrength).average().orElseThrow(VendingMachineException::new);
    }
 
    @Override
    public Map<String, Beverage> getAllBeveragesMappedByName() {
-      return Map.of();
+      return beverages.stream().collect(Collectors.toMap(Beverage::getName, beverage -> beverage));
    }
 
    @Override
    public double getMultipliedAmountsOfBeverages() {
-      return 0;
+      return beverages.stream().mapToDouble(Beverage::getAmount).reduce(1,(a,b)-> a * b);
    }
 
    @Override
    public List<Beverage> getTopFiveBeveragesWithTheLeastAmountOrderedByAmountDescending() {
-      return List.of();
+      return beverages.stream().sorted(Comparator.comparingDouble(Beverage::getAmount)).limit(5).sorted(Comparator.comparingDouble(Beverage::getAmount).reversed()).toList();
    }
 
    @Override
    public List<Beverage> getListByFilter(Predicate<Beverage> filter) {
-      return List.of();
+      return beverages.stream().filter(filter).toList();
    }
 
    @Override
    public List<Double> getListOfCurrentAmountsOfBeverages() {
-      return List.of();
+      return beverages.stream().map(Beverage::getAmount).toList();
    }
 
    @Override
    public List<Beverage> findAllAffordableBeverages(double budget) {
-      return List.of();
+      return beverages.stream().filter(beverage -> (Bottle.PRICE_FOR_BOTTLE + Bottle.MAX_AMOUNT_IN_LITER * beverage.getPricePerLiter()) < budget).toList();
    }
 }
